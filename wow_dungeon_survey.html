@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WoW Dungeon Performance Survey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(20, 25, 45, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .header h1 {
+            color: #ffd700;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .header p {
+            color: #b8b8b8;
+            font-size: 1.1em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(30, 35, 55, 0.6);
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .section h2 {
+            color: #ffd700;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #e8e8e8;
+        }
+
+        .rating-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rating-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        input[type="radio"] {
+            transform: scale(1.2);
+        }
+
+        select, textarea, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            background: rgba(15, 20, 35, 0.8);
+            color: #e8e8e8;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(15, 20, 35, 0.5);
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(45deg, #ffed4e, #ffd700);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(30, 35, 55, 0.8);
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+            display: none;
+        }
+
+        .results h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .icon {
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .rating-container {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔️ Dungeon Performance Survey</h1>
+            <p>Help us improve our team coordination and dungeon success rates</p>
+        </div>
+
+        <form id="surveyForm">
+            <div class="section">
+                <h2><span class="icon">👤</span> Team Member Information</h2>
+                <div class="question">
+                    <label for="playerName">Your Character Name:</label>
+                    <input type="text" id="playerName" name="playerName" required>
+                </div>
+                <div class="question">
+                    <label for="playerRole">Your Primary Role:</label>
+                    <select id="playerRole" name="playerRole" required>
+                        <option value="">Select your role</option>
+                        <option value="tank">Tank</option>
+                        <option value="healer">Healer</option>
+                        <option value="dps">DPS</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">📊</span> Overall Performance Rating</h2>
+                <div class="question">
+                    <label>How would you rate our overall dungeon performance?</label>
+                    <div class="rating-container">
+                        <div class="rating-item">
+                            <input type="radio" id="overall1" name="overallRating" value="1">
+                            <label for="overall1">1 - Poor</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="overall2" name="overallRating" value="2">
+                            <label for="overall2">2 - Below Average</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="overall3" name="overallRating" value="3">
+                            <label for="overall3">3 - Average</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="overall4" name="overallRating" value="4">
+                            <label for="overall4">4 - Good</label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="overall5" name="overallRating" value="5">
+                            <label for="overall5">5 - Excellent</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">🎯</span> Specific Performance Areas</h2>
+                <div class="question">
+                    <label>Rate our performance in these key areas (1-5 scale):</label>
+                    
+                    <div style="margin: 15px 0;">
+                        <label>Communication & Coordination:</label>
+                        <div class="rating-container">
+                            <div class="rating-item">
+                                <input type="radio" id="comm1" name="communication" value="1">
+                                <label for="comm1">1</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="comm2" name="communication" value="2">
+                                <label for="comm2">2</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="comm3" name="communication" value="3">
+                                <label for="comm3">3</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="comm4" name="communication" value="4">
+                                <label for="comm4">4</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="comm5" name="communication" value="5">
+                                <label for="comm5">5</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin: 15px 0;">
+                        <label>Mechanics Execution:</label>
+                        <div class="rating-container">
+                            <div class="rating-item">
+                                <input type="radio" id="mech1" name="mechanics" value="1">
+                                <label for="mech1">1</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="mech2" name="mechanics" value="2">
+                                <label for="mech2">2</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="mech3" name="mechanics" value="3">
+                                <label for="mech3">3</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="mech4" name="mechanics" value="4">
+                                <label for="mech4">4</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="mech5" name="mechanics" value="5">
+                                <label for="mech5">5</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin: 15px 0;">
+                        <label>Positioning & Movement:</label>
+                        <div class="rating-container">
+                            <div class="rating-item">
+                                <input type="radio" id="pos1" name="positioning" value="1">
+                                <label for="pos1">1</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="pos2" name="positioning" value="2">
+                                <label for="pos2">2</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="pos3" name="positioning" value="3">
+                                <label for="pos3">3</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="pos4" name="positioning" value="4">
+                                <label for="pos4">4</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="pos5" name="positioning" value="5">
+                                <label for="pos5">5</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin: 15px 0;">
+                        <label>Damage/Threat Management:</label>
+                        <div class="rating-container">
+                            <div class="rating-item">
+                                <input type="radio" id="dmg1" name="damage" value="1">
+                                <label for="dmg1">1</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="dmg2" name="damage" value="2">
+                                <label for="dmg2">2</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="dmg3" name="damage" value="3">
+                                <label for="dmg3">3</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="dmg4" name="damage" value="4">
+                                <label for="dmg4">4</label>
+                            </div>
+                            <div class="rating-item">
+                                <input type="radio" id="dmg5" name="damage" value="5">
+                                <label for="dmg5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">⚠️</span> Common Issues</h2>
+                <div class="question">
+                    <label>What are the most common problems you've noticed? (Check all that apply)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="issue1" name="issues" value="poor_communication">
+                            <label for="issue1">Poor communication</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="issue2" name="issues" value="missed_mechanics">
+                            <label for="issue2">Missed mechanics</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="issue3" name="issues" value="bad_positioning">
+                            <label for="issue3">Bad positioning</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="issue4" name="issues" value="slow_reactions">
+                            <label for="issue4">Slow reactions</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="issue5" name="issues" value="gear_problems">
+                            <label for="issue5">Gear/spec issues</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="issue6" name="issues" value="route_knowledge">
+                            <label for="issue6">Route knowledge</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="issue7" name="issues" value="interrupts">
+                            <label for="issue7">Interrupt coordination</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="issue8" name="issues" value="cooldowns">
+                            <label for="issue8">Cooldown usage</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">🔧</span> Improvement Suggestions</h2>
+                <div class="question">
+                    <label for="improvements">What specific improvements would you suggest?</label>
+                    <textarea id="improvements" name="improvements" placeholder="Share your thoughts on what we can do better..."></textarea>
+                </div>
+                <div class="question">
+                    <label for="strengths">What are our team's biggest strengths?</label>
+                    <textarea id="strengths" name="strengths" placeholder="What do we do well that we should continue..."></textarea>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">📈</span> Goals & Motivation</h2>
+                <div class="question">
+                    <label for="goals">What key level or achievement should we focus on next?</label>
+                    <input type="text" id="goals" name="goals" placeholder="e.g., +15s, timing all dungeons, specific achievements">
+                </div>
+                <div class="question">
+                    <label for="motivation">On a scale of 1-10, how motivated are you to improve and push higher keys?</label>
+                    <select id="motivation" name="motivation">
+                        <option value="">Select motivation level</option>
+                        <option value="1">1 - Not motivated</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5 - Moderately motivated</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10 - Extremely motivated</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Survey</button>
+        </form>
+
+        <div id="results" class="results">
+            <h3>Survey Results Submitted!</h3>
+            <p>Thank you for your feedback! Your responses have been recorded and will help improve our team performance.</p>
+            <div id="responseData"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responses = {};
+            
+            // Collect all form data
+            for (let [key, value] of formData.entries()) {
+                if (responses[key]) {
+                    if (Array.isArray(responses[key])) {
+                        responses[key].push(value);
+                    } else {
+                        responses[key] = [responses[key], value];
+                    }
+                } else {
+                    responses[key] = value;
+                }
+            }
+            
+            // Handle checkboxes separately
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const issues = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.name === 'issues') {
+                    issues.push(checkbox.value);
+                }
+            });
+            responses.issues = issues;
+            
+            // Display results
+            const resultsDiv = document.getElementById('results');
+            const responseDataDiv = document.getElementById('responseData');
+            
+            let resultsHTML = '<h4>Your Response Summary:</h4>';
+            resultsHTML += `<p><strong>Player:</strong> ${responses.playerName || 'Anonymous'}</p>`;
+            resultsHTML += `<p><strong>Role:</strong> ${responses.playerRole || 'Not specified'}</p>`;
+            resultsHTML += `<p><strong>Overall Rating:</strong> ${responses.overallRating || 'Not rated'}/5</p>`;
+            resultsHTML += `<p><strong>Communication:</strong> ${responses.communication || 'Not rated'}/5</p>`;
+            resultsHTML += `<p><strong>Mechanics:</strong> ${responses.mechanics || 'Not rated'}/5</p>`;
+            resultsHTML += `<p><strong>Positioning:</strong> ${responses.positioning || 'Not rated'}/5</p>`;
+            resultsHTML += `<p><strong>Damage/Threat:</strong> ${responses.damage || 'Not rated'}/5</p>`;
+            resultsHTML += `<p><strong>Motivation Level:</strong> ${responses.motivation || 'Not specified'}/10</p>`;
+            
+            if (issues.length > 0) {
+                resultsHTML += `<p><strong>Common Issues:</strong> ${issues.join(', ')}</p>`;
+            }
+            
+            responseDataDiv.innerHTML = resultsHTML;
+            resultsDiv.style.display = 'block';
+            
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            // In a real application, you would send this data to a server
+            console.log('Survey Response:', responses);
+        });
+    </script>
+</body>
+</html>
